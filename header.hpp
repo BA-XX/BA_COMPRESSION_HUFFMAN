@@ -1,10 +1,14 @@
 #pragma once
 
+#include <iostream>
+
+
 namespace ba // definier un nouvel espace de nom s'apple ba
 {
-    typedef unsigned int size_t;
+    //typedef unsigned int size_t;
     typedef int data_type;
 
+    const int ERROR_HEAP_EMPTY = 21;
     const int ERROR_HEAP_OVERFLOW = 22;
 
     class Node
@@ -33,6 +37,8 @@ namespace ba // definier un nouvel espace de nom s'apple ba
         size_t max_size; // la taille maximume
         size_t size;     // la taille effective
 
+        void swap(size_t, size_t);
+
     public:
         MinHeap(size_t);
         ~MinHeap();
@@ -41,10 +47,22 @@ namespace ba // definier un nouvel espace de nom s'apple ba
         size_t getLeftChild(size_t);
         size_t getRightChild(size_t);
 
-        void exchange(size_t, size_t);
         void HeapfiyUp();
+        void HeapfiyDown();
+
         void insert(data_type);
         data_type extract();
+        bool isEmpty();
+
+        void printHeap()
+        {
+            std::cout << "MinHeap: ";
+            for (int i = 0; i < size; ++i)
+            {
+                std::cout << array[i]->getData() << " ";
+            }
+            std::cout << std::endl;
+        }
     };
 
 }

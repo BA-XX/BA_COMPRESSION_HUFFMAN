@@ -39,11 +39,23 @@ Node *Node::getRight()
 /* End Node*/
 
 /* Class MinHeap */
+void MinHeap::swap(size_t a, size_t b)
+{
+    // echanger deux valeur
+
+    data_type temp = array[a]->getData();
+
+    array[a]->setData(array[b]->getData());
+    array[b]->setData(temp);
+}
 MinHeap::MinHeap(size_t max_size)
 {
     this->array = new Node *[max_size];
     this->max_size = max_size;
     this->size = 0;
+
+    for (size_t i = 0; i < max_size; i++) // intialiser tout le tableau avec null
+        array[i] = nullptr;
 }
 MinHeap::~MinHeap()
 {
@@ -65,14 +77,20 @@ size_t MinHeap::getRightChild(size_t i)
     return 2 * i + 2;
 }
 
-void MinHeap::exchange(size_t a, size_t b) // echanger deux valeurs en fournissant les index
-{
-    data_type temp = array[a]->getData();
-
-    array[a]->setData(array[b]->getData());
-    array[b]->setData(temp);
-}
 void MinHeap::HeapfiyUp()
+{
+    if (isEmpty())
+        return;
+
+    size_t i = size - 1; // commencer du bas et remonte
+
+    while (i > 0 && array[i]->getData() < array[getParent(i)]->getData())
+    {
+        swap(i, getParent(i));
+        i = getParent(i); // changer l'indece
+    }
+}
+void MinHeap::HeapfiyDown()
 {
 }
 void MinHeap::insert(data_type data)
@@ -84,10 +102,34 @@ void MinHeap::insert(data_type data)
         array[size] = temp;
         ++size;
 
-        if (size > 1)
+        if (size > 1) // si la taille superieure a 1 faire un heapfiy up pour assurer l'ordre du tas
             HeapfiyUp();
     }
     else
         throw ERROR_HEAP_OVERFLOW;
 }
+data_type MinHeap::extract()
+{
+    if (size == 0)
+        throw ERROR_HEAP_EMPTY;
+
+    data_type temp = array[0]->getData();
+
+    delete array[0]; // liberer la memoire du node racine
+
+    if (size > 1) // si la taille du tas supperieur a 1, echanger le derniere element avec la racine
+        array[0] = array[size - 1];
+
+    array[size - 1] = nullptr;
+    --size;
+
+    if (size > 1) // si la taille superieure a 1 faire un heapfiy down pour assurer l'ordre du tas
+        HeapfiyDown();
+}
+
+bool MinHeap::isEmpty()
+{
+    return (size == 0);
+}
+
 /* End MinHeap */
